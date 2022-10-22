@@ -304,7 +304,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// Basic usage:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "A.B.".splitter('.').to_terminated().collect();
     /// assert_eq!(v, ["A", "B"]);
     ///
@@ -347,7 +347,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// # Examples
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "A.B.".splitter('.').to_terminated().to_reversed().collect();
     /// assert_eq!(v, ["B", "A"]);
     ///
@@ -389,7 +389,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// Simple patterns:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "Mary had a little lambda".splitter(' ').with_limit(3).collect();
     /// assert_eq!(v, ["Mary", "had", "a little lambda"]);
     ///
@@ -406,7 +406,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// A more complex pattern, using a closure:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "abc1defXghi".splitter(|c| c == '1' || c == 'X').with_limit(2).collect();
     /// assert_eq!(v, ["abc", "defXghi"]);
     /// ```
@@ -439,7 +439,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// Simple patterns:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "Mary had a little lamb".splitter(' ').to_reversed().with_limit(3).collect();
     /// assert_eq!(v, ["lamb", "little", "Mary had a"]);
     ///
@@ -453,7 +453,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// A more complex pattern, using a closure:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "abc1defXghi".splitter(|c| c == '1' || c == 'X').to_reversed().with_limit(2).collect();
     /// assert_eq!(v, ["ghi", "abc1def"]);
     /// ```
@@ -467,7 +467,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// # Examples
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// assert_eq!("cfg".splitter('=').once(), None);
     /// assert_eq!("cfg=".splitter('=').once(), Some(("cfg", "")));
     /// assert_eq!("cfg=foo".splitter('=').once(), Some(("cfg", "foo")));
@@ -481,7 +481,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// # Examples
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// assert_eq!("cfg".splitter('=').to_reversed().once(), None);
     /// assert_eq!("cfg=foo".splitter('=').to_reversed().once(), Some(("cfg", "foo")));
     /// assert_eq!("cfg=foo=bar".splitter('=').to_reversed().once(), Some(("cfg=foo", "bar")));
@@ -494,7 +494,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// # Examples
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// assert_eq!("cfg".splitter('=').to_inclusive().to_reversed().once(), None);
     /// assert_eq!("cfg=foo".splitter('=').to_reversed().to_inclusive().once(), Some(("cfg", "=foo")));
     /// assert_eq!("cfg=foo=bar".splitter('=').to_inclusive().to_reversed().once(), Some(("cfg=foo", "=bar")));
@@ -535,7 +535,7 @@ where
     /// Simple patterns:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "Mary had a little lamb".splitter(' ').to_reversed().collect();
     /// assert_eq!(v, ["lamb", "little", "a", "had", "Mary"]);
     ///
@@ -552,14 +552,14 @@ where
     /// A more complex pattern, using a closure:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "abc1defXghi".splitter(|c| c == '1' || c == 'X').to_reversed().collect();
     /// assert_eq!(v, ["ghi", "def", "abc"]);
     /// ```
     /// 
     ///
     /// ```compile_fail
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// // should not implement DoubleEndedIterator
     /// fn reverse(input: &str) -> impl DoubleEndedIterator {
     ///     input.splitter("aa").to_reversed()
@@ -584,7 +584,7 @@ impl<'a, P: Pattern<'a>, const D: Direction> Splitter<'a, P, D, {Exclusive}> {
     /// # Examples
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "Mary had a little lamb\nlittle lamb\nlittle lamb."
     ///     .splitter('\n').to_inclusive().collect();
     /// assert_eq!(v, ["Mary had a little lamb\n", "little lamb\n", "little lamb."]);
@@ -595,7 +595,7 @@ impl<'a, P: Pattern<'a>, const D: Direction> Splitter<'a, P, D, {Exclusive}> {
     /// That substring will be the last item returned by the iterator.
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "Mary had a little lamb\nlittle lamb\nlittle lamb.\n"
     ///     .splitter('\n').to_inclusive().collect();
     /// assert_eq!(v, ["Mary had a little lamb\n", "little lamb\n", "little lamb.\n"]);
@@ -635,7 +635,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// Simple patterns:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "Mary had a little lamb".splitter(' ').collect();
     /// assert_eq!(v, ["Mary", "had", "a", "little", "lamb"]);
     ///
@@ -658,7 +658,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// If the pattern is a slice of chars, split on each occurrence of any of the characters:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "2020-11-03 23:59".splitter(&['-', ' ', ':', '@'][..]).collect();
     /// assert_eq!(v, ["2020", "11", "03", "23", "59"]);
     /// ```
@@ -666,7 +666,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// A more complex pattern, using a closure:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let v: Vec<&str> = "abc1defXghi".splitter(|c| c == '1' || c == 'X').collect();
     /// assert_eq!(v, ["abc", "def", "ghi"]);
     /// ```
@@ -675,7 +675,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// with empty strings in the output:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let x = "||||a||b|c".to_string();
     /// let d: Vec<_> = x.splitter('|').collect();
     ///
@@ -685,7 +685,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// Contiguous separators are separated by the empty string.
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let x = "(///)".to_string();
     /// let d: Vec<_> = x.splitter('/').collect();
     ///
@@ -696,7 +696,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// by empty strings.
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let d: Vec<_> = "010".splitter("0").collect();
     /// assert_eq!(d, &["", "1", ""]);
     /// ```
@@ -706,7 +706,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// and end of the string.
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let f: Vec<_> = "rust".splitter("").collect();
     /// assert_eq!(f, &["", "r", "u", "s", "t", ""]);
     /// ```
@@ -715,7 +715,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// when whitespace is used as the separator. This code is correct:
     ///
     /// ```
-    /// # use playground::SplitExt;
+    /// # use str_splitter::const_generics::SplitExt;
     /// let x = "    a  b c".to_string();
     /// let d: Vec<_> = x.splitter(' ').collect();
     ///
