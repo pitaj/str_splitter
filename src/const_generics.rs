@@ -25,9 +25,9 @@ pub use gens::*;
 // pub use Direction::*;
 // pub use Clusivity::*;
 
-use core::iter::FusedIterator;
 use core::fmt;
-use core::str::pattern::{Pattern, DoubleEndedSearcher, ReverseSearcher, Searcher};
+use core::iter::FusedIterator;
+use core::str::pattern::{DoubleEndedSearcher, Pattern, ReverseSearcher, Searcher};
 
 pub struct Splitter<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> {
     internal: SplitInternal<'a, P>,
@@ -39,7 +39,7 @@ where
 {
     fn clone(&self) -> Self {
         Splitter {
-            internal: self.internal.clone()
+            internal: self.internal.clone(),
         }
     }
 }
@@ -69,7 +69,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     }
 }
 
-impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, {Forward}, {Exclusive}> {
+impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, { Forward }, { Exclusive }> {
     type Item = &'a str;
 
     #[inline]
@@ -77,7 +77,7 @@ impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, {Forward}, {Exclusive}> {
         self.internal.next()
     }
 }
-impl<'a, P: Pattern<'a>> DoubleEndedIterator for Splitter<'a, P, {Forward}, {Exclusive}>
+impl<'a, P: Pattern<'a>> DoubleEndedIterator for Splitter<'a, P, { Forward }, { Exclusive }>
 where
     P::Searcher: DoubleEndedSearcher<'a>,
 {
@@ -86,14 +86,14 @@ where
         self.internal.next_back()
     }
 }
-impl<'a, P: Pattern<'a>> SplitOnce<'a> for Splitter<'a, P, {Forward}, {Exclusive}> {
+impl<'a, P: Pattern<'a>> SplitOnce<'a> for Splitter<'a, P, { Forward }, { Exclusive }> {
     #[inline]
     fn once(self) -> Option<(&'a str, &'a str)> {
         self.internal.once()
     }
 }
 
-impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, {Forward}, {Inclusive}> {
+impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, { Forward }, { Inclusive }> {
     type Item = &'a str;
 
     #[inline]
@@ -101,7 +101,7 @@ impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, {Forward}, {Inclusive}> {
         self.internal.next_inclusive()
     }
 }
-impl<'a, P: Pattern<'a>> DoubleEndedIterator for Splitter<'a, P, {Forward}, {Inclusive}>
+impl<'a, P: Pattern<'a>> DoubleEndedIterator for Splitter<'a, P, { Forward }, { Inclusive }>
 where
     P::Searcher: DoubleEndedSearcher<'a>,
 {
@@ -110,14 +110,14 @@ where
         self.internal.next_back_inclusive()
     }
 }
-impl<'a, P: Pattern<'a>> SplitOnce<'a> for Splitter<'a, P, {Forward}, {Inclusive}> {
+impl<'a, P: Pattern<'a>> SplitOnce<'a> for Splitter<'a, P, { Forward }, { Inclusive }> {
     #[inline]
     fn once(self) -> Option<(&'a str, &'a str)> {
         self.internal.once_inclusive()
     }
 }
 
-impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, {Reversed}, {Exclusive}>
+impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, { Reversed }, { Exclusive }>
 where
     P::Searcher: ReverseSearcher<'a>,
 {
@@ -128,7 +128,7 @@ where
         self.internal.next_back()
     }
 }
-impl<'a, P: Pattern<'a>> DoubleEndedIterator for Splitter<'a, P, {Reversed}, {Exclusive}>
+impl<'a, P: Pattern<'a>> DoubleEndedIterator for Splitter<'a, P, { Reversed }, { Exclusive }>
 where
     P::Searcher: DoubleEndedSearcher<'a>,
 {
@@ -137,7 +137,7 @@ where
         self.internal.next()
     }
 }
-impl<'a, P: Pattern<'a>> SplitOnce<'a> for Splitter<'a, P, {Reversed}, {Exclusive}>
+impl<'a, P: Pattern<'a>> SplitOnce<'a> for Splitter<'a, P, { Reversed }, { Exclusive }>
 where
     P::Searcher: ReverseSearcher<'a>,
 {
@@ -147,7 +147,7 @@ where
     }
 }
 
-impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, {Reversed}, {Inclusive}>
+impl<'a, P: Pattern<'a>> Iterator for Splitter<'a, P, { Reversed }, { Inclusive }>
 where
     P::Searcher: ReverseSearcher<'a>,
 {
@@ -158,7 +158,7 @@ where
         self.internal.next_back_inclusive()
     }
 }
-impl<'a, P: Pattern<'a>> DoubleEndedIterator for Splitter<'a, P, {Reversed}, {Inclusive}>
+impl<'a, P: Pattern<'a>> DoubleEndedIterator for Splitter<'a, P, { Reversed }, { Inclusive }>
 where
     P::Searcher: DoubleEndedSearcher<'a>,
 {
@@ -167,7 +167,7 @@ where
         self.internal.next()
     }
 }
-impl<'a, P: Pattern<'a>> SplitOnce<'a> for Splitter<'a, P, {Reversed}, {Inclusive}>
+impl<'a, P: Pattern<'a>> SplitOnce<'a> for Splitter<'a, P, { Reversed }, { Inclusive }>
 where
     P::Searcher: ReverseSearcher<'a>,
 {
@@ -177,12 +177,12 @@ where
     }
 }
 
-impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> FusedIterator for Splitter<'a, P, D, C>
+impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> FusedIterator
+    for Splitter<'a, P, D, C>
 where
     Splitter<'a, P, D, C>: Iterator,
-{}
-
-
+{
+}
 
 pub struct SplitterN<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> {
     iter: Splitter<'a, P, D, C>,
@@ -204,7 +204,7 @@ where
 
 impl<'a, P, const D: Direction, const C: Clusivity> fmt::Debug for SplitterN<'a, P, D, C>
 where
-    P: Pattern<'a, Searcher: fmt::Debug>
+    P: Pattern<'a, Searcher: fmt::Debug>,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SplitterN")
@@ -268,7 +268,6 @@ where
         }
     }
 }
-
 
 impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P, D, C> {
     /// An iterator over substrings of the given string slice, separated by
@@ -361,7 +360,7 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
         self.internal.allow_trailing_empty = false;
         self
     }
-    
+
     /// An iterator over substrings of the given string slice, separated by a
     /// pattern, restricted to returning at most `n` items.
     ///
@@ -458,7 +457,10 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     /// assert_eq!(v, ["ghi", "abc1def"]);
     /// ```
     pub fn with_limit(self, n: usize) -> SplitterN<'a, P, D, C> {
-        SplitterN { iter: self, count: n }
+        SplitterN {
+            iter: self,
+            count: n,
+        }
     }
 
     /// Splits the string on the first occurrence of the specified delimiter and
@@ -502,12 +504,12 @@ impl<'a, P: Pattern<'a>, const D: Direction, const C: Clusivity> Splitter<'a, P,
     #[inline]
     pub fn once(self) -> Option<(&'a str, &'a str)>
     where
-        Self: SplitOnce<'a>
+        Self: SplitOnce<'a>,
     {
         SplitOnce::once(self)
     }
 }
-impl<'a, P: Pattern<'a>, const C: Clusivity> Splitter<'a, P, {Forward}, C>
+impl<'a, P: Pattern<'a>, const C: Clusivity> Splitter<'a, P, { Forward }, C>
 where
     P::Searcher: ReverseSearcher<'a>,
 {
@@ -556,7 +558,7 @@ where
     /// let v: Vec<&str> = "abc1defXghi".splitter(|c| c == '1' || c == 'X').to_reversed().collect();
     /// assert_eq!(v, ["ghi", "def", "abc"]);
     /// ```
-    /// 
+    ///
     ///
     /// ```compile_fail
     /// # use str_splitter::const_generics::SplitExt;
@@ -565,11 +567,13 @@ where
     ///     input.splitter("aa").to_reversed()
     /// }
     /// ```
-    pub fn to_reversed(self) -> Splitter<'a, P, {Reversed}, C> {
-        Splitter { internal: self.internal }
+    pub fn to_reversed(self) -> Splitter<'a, P, { Reversed }, C> {
+        Splitter {
+            internal: self.internal,
+        }
     }
 }
-impl<'a, P: Pattern<'a>, const D: Direction> Splitter<'a, P, D, {Exclusive}> {
+impl<'a, P: Pattern<'a>, const D: Direction> Splitter<'a, P, D, { Exclusive }> {
     /// An iterator over substrings of this string slice, separated by
     /// characters matched by a pattern. Differs from the iterator produced by
     /// `split` in that `split_inclusive` leaves the matched part as the
@@ -600,7 +604,7 @@ impl<'a, P: Pattern<'a>, const D: Direction> Splitter<'a, P, D, {Exclusive}> {
     ///     .splitter('\n').to_inclusive().collect();
     /// assert_eq!(v, ["Mary had a little lamb\n", "little lamb\n", "little lamb.\n"]);
     /// ```
-    pub fn to_inclusive(self) -> Splitter<'a, P, D, {Inclusive}> {
+    pub fn to_inclusive(self) -> Splitter<'a, P, D, { Inclusive }> {
         let mut internal = self.internal;
         internal.allow_trailing_empty = false;
 
@@ -609,7 +613,7 @@ impl<'a, P: Pattern<'a>, const D: Direction> Splitter<'a, P, D, {Exclusive}> {
 }
 
 pub trait SplitExt<'a, P: Pattern<'a>> {
-    fn splitter(&'a self, pat: P) -> Splitter<'a, P, {Forward}, {Exclusive}>;
+    fn splitter(&'a self, pat: P) -> Splitter<'a, P, { Forward }, { Exclusive }>;
 }
 impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// An iterator over substrings of this string slice, separated by
@@ -731,7 +735,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
     /// Use [`split_whitespace`] for this behavior.
     ///
     /// [`split_whitespace`]: str::split_whitespace
-    fn splitter(&'a self, pat: P) -> Splitter<'a, P, {Forward}, {Exclusive}> {
+    fn splitter(&'a self, pat: P) -> Splitter<'a, P, { Forward }, { Exclusive }> {
         Splitter {
             internal: SplitInternal {
                 start: 0,
@@ -739,7 +743,7 @@ impl<'a, P: Pattern<'a>> SplitExt<'a, P> for str {
                 matcher: pat.into_searcher(self),
                 allow_trailing_empty: true,
                 finished: false,
-            }
+            },
         }
     }
 }
@@ -753,7 +757,9 @@ fn should_impl_traits() {
         input.splitter('a')
     }
 
-    fn forward_inclusive(input: &str) -> impl Iterator<Item = &str> + FusedIterator + DoubleEndedIterator {
+    fn forward_inclusive(
+        input: &str,
+    ) -> impl Iterator<Item = &str> + FusedIterator + DoubleEndedIterator {
         input.splitter('a').to_inclusive()
     }
 
@@ -761,7 +767,9 @@ fn should_impl_traits() {
         input.splitter('a').to_reversed()
     }
 
-    fn reverse_inclusive(input: &str) -> [impl Iterator<Item = &str> + FusedIterator + DoubleEndedIterator; 2] {
+    fn reverse_inclusive(
+        input: &str,
+    ) -> [impl Iterator<Item = &str> + FusedIterator + DoubleEndedIterator; 2] {
         [
             // either order returns the same type
             input.splitter('a').to_reversed().to_inclusive(),
@@ -769,7 +777,6 @@ fn should_impl_traits() {
         ]
     }
 }
-
 
 // struct Split<'a, P: Pattern<'a>>(Splitter<'a, P, false, false>);
 // struct SplitInclusive<'a, P: Pattern<'a>>(Splitter<'a, P, false, true>);
@@ -784,7 +791,6 @@ fn should_impl_traits() {
 // struct RSplitNInclusive<'a, P: Pattern<'a>>(SplitterN<'a, P, true, true>);
 // struct RSplitNTerminator<'a, P: Pattern<'a>>(SplitterN<'a, P, true, false>);
 
-
 // addition to `SplitInternal` for `split_once` functionality
 impl<'a, P: Pattern<'a>> SplitInternal<'a, P> {
     fn once(mut self) -> Option<(&'a str, &'a str)> {
@@ -797,7 +803,12 @@ impl<'a, P: Pattern<'a>> SplitInternal<'a, P> {
         // SAFETY:
         // `Searcher` is known to return valid indices.
         // `self.start` and `self.end` always lie on unicode boundaries.
-        unsafe { Some((haystack.get_unchecked(self.start..start), haystack.get_unchecked(end..self.end))) }
+        unsafe {
+            Some((
+                haystack.get_unchecked(self.start..start),
+                haystack.get_unchecked(end..self.end),
+            ))
+        }
     }
 
     fn once_back(mut self) -> Option<(&'a str, &'a str)>
@@ -813,7 +824,12 @@ impl<'a, P: Pattern<'a>> SplitInternal<'a, P> {
         // SAFETY:
         // `Searcher` is known to return valid indices.
         // `self.start` and `self.end` always lie on unicode boundaries.
-        unsafe { Some((haystack.get_unchecked(self.start..start), haystack.get_unchecked(end..self.end))) }
+        unsafe {
+            Some((
+                haystack.get_unchecked(self.start..start),
+                haystack.get_unchecked(end..self.end),
+            ))
+        }
     }
 
     fn once_inclusive(mut self) -> Option<(&'a str, &'a str)> {
@@ -826,7 +842,12 @@ impl<'a, P: Pattern<'a>> SplitInternal<'a, P> {
         // SAFETY:
         // `Searcher` is known to return valid indices.
         // `self.start` and `self.end` always lie on unicode boundaries.
-        unsafe { Some((haystack.get_unchecked(self.start..end), haystack.get_unchecked(end..self.end))) }
+        unsafe {
+            Some((
+                haystack.get_unchecked(self.start..end),
+                haystack.get_unchecked(end..self.end),
+            ))
+        }
     }
 
     fn once_back_inclusive(mut self) -> Option<(&'a str, &'a str)>
@@ -842,10 +863,14 @@ impl<'a, P: Pattern<'a>> SplitInternal<'a, P> {
         // SAFETY:
         // `Searcher` is known to return valid indices.
         // `self.start` and `self.end` always lie on unicode boundaries.
-        unsafe { Some((haystack.get_unchecked(self.start..start), haystack.get_unchecked(start..self.end))) }
+        unsafe {
+            Some((
+                haystack.get_unchecked(self.start..start),
+                haystack.get_unchecked(start..self.end),
+            ))
+        }
     }
 }
-
 
 // ========================================
 // from core/str/iter.rs
@@ -863,7 +888,8 @@ where
     }
 }
 
-/* pub(super) */ struct SplitInternal<'a, P: Pattern<'a>> {
+/* pub(super) */
+struct SplitInternal<'a, P: Pattern<'a>> {
     /* pub(super) */ start: usize,
     /* pub(super) */ end: usize,
     /* pub(super) */ matcher: P::Searcher,
