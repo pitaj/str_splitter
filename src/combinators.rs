@@ -1,7 +1,6 @@
 use core::fmt;
 use core::iter::FusedIterator;
 use core::str::pattern::{DoubleEndedSearcher, Pattern, ReverseSearcher, Searcher};
-use std::marker::PhantomData;
 
 pub struct Splitter<'a, P: Pattern<'a>> {
     internal: SplitInternal<'a, P>,
@@ -209,9 +208,7 @@ impl<'a, P: Pattern<'a>> Splitter<'a, P> {
     where
         P::Searcher: ReverseSearcher<'a>,
     {
-        Reversed(Splitter {
-            internal: self.internal,
-        })
+        Reversed(self)
     }
 
     /// An iterator over substrings of the given string slice, separated by a
@@ -262,11 +259,10 @@ impl<'a, P: Pattern<'a>> Splitter<'a, P> {
     /// let v: Vec<&str> = "abc1defXghi".splitter(|c| c == '1' || c == 'X').with_limit(2).collect();
     /// assert_eq!(v, ["abc", "defXghi"]);
     /// ```
-    pub fn with_limit(self, n: usize) -> Limited<'a, P, Self> {
+    pub fn with_limit(self, n: usize) -> Limited<Self> {
         Limited {
             iter: self,
             count: n,
-            _phantom: PhantomData,
         }
     }
 
@@ -276,7 +272,7 @@ impl<'a, P: Pattern<'a>> Splitter<'a, P> {
     }
 }
 
-impl<'a, P: Pattern<'a>> LimitedInternal<'a, P> for Splitter<'a, P> {
+impl<'a, P: Pattern<'a>> LimitedInternal<'a> for Splitter<'a, P> {
     fn get_end(&mut self) -> std::option::Option<&'a str> {
         self.internal.get_end()
     }
@@ -325,11 +321,10 @@ impl<'a, P: Pattern<'a>> Inclusive<Splitter<'a, P>> {
         Reversed(self)
     }
 
-    pub fn with_limit(self, n: usize) -> Limited<'a, P, Self> {
+    pub fn with_limit(self, n: usize) -> Limited<Self> {
         Limited {
             iter: self,
             count: n,
-            _phantom: PhantomData,
         }
     }
 
@@ -339,11 +334,7 @@ impl<'a, P: Pattern<'a>> Inclusive<Splitter<'a, P>> {
     }
 }
 
-impl<'a, P, S> LimitedInternal<'a, P> for Inclusive<S>
-where
-    P: Pattern<'a>,
-    S: LimitedInternal<'a, P>,
-{
+impl<'a, S: LimitedInternal<'a>> LimitedInternal<'a> for Inclusive<S> {
     fn get_end(&mut self) -> std::option::Option<&'a str> {
         self.0.get_end()
     }
@@ -493,11 +484,10 @@ where
     /// let v: Vec<&str> = "abc1defXghi".splitter(|c| c == '1' || c == 'X').to_reversed().with_limit(2).collect();
     /// assert_eq!(v, ["ghi", "abc1def"]);
     /// ```
-    pub fn with_limit(self, n: usize) -> Limited<'a, P, Self> {
+    pub fn with_limit(self, n: usize) -> Limited<Self> {
         Limited {
             iter: self,
             count: n,
-            _phantom: PhantomData,
         }
     }
 
@@ -547,11 +537,10 @@ where
         self.0 .0.internal.once_back_inclusive()
     }
 
-    pub fn with_limit(self, n: usize) -> Limited<'a, P, Self> {
+    pub fn with_limit(self, n: usize) -> Limited<Self> {
         Limited {
             iter: self,
             count: n,
-            _phantom: PhantomData,
         }
     }
 
@@ -561,10 +550,9 @@ where
     }
 }
 
-impl<'a, P, S> LimitedInternal<'a, P> for Reversed<S>
+impl<'a, S> LimitedInternal<'a> for Reversed<S>
 where
-    P: Pattern<'a, Searcher: ReverseSearcher<'a>>,
-    S: LimitedInternal<'a, P>,
+    S: LimitedInternal<'a>,
 {
     fn get_end(&mut self) -> std::option::Option<&'a str> {
         self.0.get_end()
@@ -575,72 +563,49 @@ where
     }
 }
 
-// make SplitterNInternal inaccessible
+// make LimitedInternal inaccessible
 mod hidden {
-    use core::str::pattern::Pattern;
-
-    pub trait LimitedInternal<'a, P: Pattern<'a>> {
+    pub trait LimitedInternal<'a> {
         fn get_end(&mut self) -> Option<&'a str>;
         fn as_str(&self) -> &'a str;
     }
 }
 use hidden::LimitedInternal;
 
-pub struct Limited<'a, P, Iter>
-where
-    P: Pattern<'a>,
-    Iter: LimitedInternal<'a, P>,
-{
+pub struct Limited<Iter> {
     iter: Iter,
     /// The number of splits remaining
     count: usize,
-    // for type parameters
-    _phantom: PhantomData<SplitInternal<'a, P>>,
 }
 
-impl<'a, P, Iter> Clone for Limited<'a, P, Iter>
-where
-    P: Pattern<'a>,
-    Iter: LimitedInternal<'a, P> + Clone,
-{
+impl<Iter: Clone> Clone for Limited<Iter> {
     fn clone(&self) -> Self {
         Limited {
             iter: self.iter.clone(),
             count: self.count,
-            // for type parameters
-            _phantom: PhantomData,
         }
     }
 }
 
-impl<'a, P, Iter> fmt::Debug for Limited<'a, P, Iter>
-where
-    P: Pattern<'a>,
-    Iter: LimitedInternal<'a, P> + fmt::Debug,
-{
+impl<Iter: fmt::Debug> fmt::Debug for Limited<Iter> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("SplitterN")
+        f.debug_struct("Limited")
             .field("iter", &self.iter)
             .field("count", &self.count)
             .finish()
     }
 }
 
-impl<'a, P, Iter> Limited<'a, P, Iter>
-where
-    P: Pattern<'a>,
-    Iter: LimitedInternal<'a, P>,
-{
+impl<'a, Iter: LimitedInternal<'a>> Limited<Iter> {
     #[inline]
     pub fn as_str(&self) -> &'a str {
         self.iter.as_str()
     }
 }
 
-impl<'a, P, Iter> Iterator for Limited<'a, P, Iter>
+impl<'a, Iter> Iterator for Limited<Iter>
 where
-    P: Pattern<'a>,
-    Iter: LimitedInternal<'a, P> + Iterator<Item = &'a str>,
+    Iter: LimitedInternal<'a> + Iterator<Item = &'a str>,
 {
     type Item = &'a str;
 
@@ -659,10 +624,9 @@ where
         }
     }
 }
-impl<'a, P, Iter> DoubleEndedIterator for Limited<'a, P, Iter>
+impl<'a, Iter> DoubleEndedIterator for Limited<Iter>
 where
-    P: Pattern<'a, Searcher: DoubleEndedSearcher<'a>>,
-    Iter: LimitedInternal<'a, P> + Iterator<Item = &'a str> + DoubleEndedIterator,
+    Iter: LimitedInternal<'a> + Iterator<Item = &'a str> + DoubleEndedIterator,
 {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
@@ -679,10 +643,8 @@ where
         }
     }
 }
-impl<'a, P, Iter> FusedIterator for Limited<'a, P, Iter>
-where
-    P: Pattern<'a>,
-    Iter: LimitedInternal<'a, P> + Iterator<Item = &'a str> + FusedIterator,
+impl<'a, Iter> FusedIterator for Limited<Iter> where
+    Iter: LimitedInternal<'a> + Iterator<Item = &'a str> + FusedIterator
 {
 }
 
