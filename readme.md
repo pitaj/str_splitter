@@ -21,8 +21,8 @@ Plus, it may be useful to have right- or left-inclusive versions.
 This could quickly balloon the API surface of `str` which is not ideal.
 
 Instead, this crate implements a kind of builder API. It does this two different ways:
-- using const generic parameters to store the direction and inclusion
-- using struct wrapper type states to store the direction and inclusion
+- using const generic parameters
+- using struct combinators
 
 Both have almost identical APIs. Usage looks like this:
 
