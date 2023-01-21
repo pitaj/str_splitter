@@ -1,6 +1,6 @@
 [package]
 name = "str_splitter"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 description = "Experiment using a combinator API for flexible string splitting"
@@ -8,6 +8,7 @@ keywords = ["str", "string", "split"]
 documentation = "https://docs.rs/str_splitter"
 homepage = "https://github.com/pitaj/str_splitter"
 repository = "https://github.com/pitaj/str_splitter"
+readme = "readme.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
